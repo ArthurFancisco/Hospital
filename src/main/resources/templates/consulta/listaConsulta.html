@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Consultas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Estilo para a barra de cabeçalho da tabela */
+        .table-dark {
+            background-color: #0d6efd !important; /* Cor principal do Bootstrap para cabeçalho */
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-info"><i class="fas fa-list-alt me-2"></i> Lista de Consultas Agendadas</h2>
+
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        
+        <a th:href="@{/consultas/criar}" class="btn btn-primary shadow-sm"><i class="fas fa-plus-circle me-1"></i> Nova Consulta</a>
+
+        <div class="input-group" style="max-width: 450px;">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" id="filtroInput" class="form-control" placeholder="Pesquisar por Paciente, Médico, Data ou ID...">
+            <button class="btn btn-outline-secondary" type="button" onclick="limparFiltro()"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover shadow-sm" id="tabelaConsultas">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th><i class="far fa-calendar-alt me-1"></i> Data e Hora</th>
+                    <th><i class="fas fa-wheelchair me-1"></i> Paciente</th>
+                    <th><i class="fas fa-stethoscope me-1"></i> Médico</th>
+                    <th>Observações</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="consulta : ${consultas}">
+                    <td class="text-center" th:text="${consulta.idConsulta}"></td>
+                    <td th:text="${#temporals.format(consulta.dataehoraConsulta, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${consulta.paciente.nomePaciente}"></td>
+                    <td th:text="${consulta.medico.nomeMedico}"></td>
+                    <td th:text="${consulta.observacoesConsulta}"></td>
+                    <td class="text-center" style="min-width: 150px;">
+                        <a th:href="@{/consultas/editar/{id}(id=${consulta.idConsulta})}" class="btn btn-warning btn-sm me-1"><i class="fas fa-edit"></i> Editar</a>
+                        <a th:href="@{/consultas/excluir/{id}(id=${consulta.idConsulta})}" class="btn btn-danger btn-sm" 
+                            onclick="return confirm('Deseja realmente excluir esta consulta?')"><i class="fas fa-trash-alt"></i> Excluir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div align="center" class="mt-4">
+        <a th:href="@{${session.userHomeUrl}}" class="btn btn-outline-secondary"><i class="fas fa-home me-1"></i> Voltar à página inicial</a>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var $input = $('#filtroInput');
+        var $tabela = $('#tabelaConsultas');
+        var $linhas = $tabela.find('tbody tr');
+        
+        // 1. Função principal de filtro
+        $input.on('keyup', function() {
+            var termo = $(this).val().toLowerCase().trim();
+
+            $linhas.each(function() {
+                var $linha = $(this);
+                // Captura o texto de todas as células da linha para a pesquisa
+                var textoLinha = $linha.text().toLowerCase();
+
+                // Verifica se o termo de pesquisa está em qualquer parte do texto da linha
+                if (textoLinha.indexOf(termo) > -1) {
+                    $linha.show();
+                } else {
+                    $linha.hide();
+                }
+            });
+        });
+
+        // 2. Função para limpar o filtro
+        window.limparFiltro = function() {
+            $input.val(''); // Limpa o campo
+            $linhas.show();  // Exibe todas as linhas
+            $input.focus();  // Foca no campo após limpar
+        };
+    });
+</script>
+
+</body>
+</html>
