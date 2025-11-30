@@ -5,66 +5,89 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${leito.idQuarto != null ? 'Editar Leito' : 'Cadastrar Leito'}"></title>
+    
+    <title th:text="${leito.idQuarto == null || leito.idQuarto == 0} ? 'Cadastrar Leito' : 'Editar Leito'">Formulário de Leito</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            /* NOTA: Verifique se sua imagem está em /static/img/ImgQuartos.jpg
+               A sintaxe th:href não funciona dentro de <style>.
+               Usamos o caminho de URL absoluto que o Spring irá servir.
+            */
+            background-image: url('/img/ImgQuartos.jpg');
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed; 
+            background-position: center center;
+            min-height: 100vh;
+            position: relative; /* Necessário para o overlay */
+        }
+        
+    </style>
 </head>
 
-<body class="bg-light">
-    <div class="container my-5">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4" style="background-color: #f3f4f6;">
+    <div class="container">
         <div class="card shadow-lg p-4 mx-auto" style="max-width: 550px;">
             <div class="card-body">
                 <div class="text-center mb-4">
                     <h2 class="text-primary">
                         <i class="fas fa-bed me-2"></i> 
-                        <span th:text="${leito.idQuarto != null ? 'Editar Leito' : 'Cadastrar Novo Leito'}"></span>
+                        <span th:text="${leito.idQuarto == null || leito.idQuarto == 0} ? 'Cadastrar Novo Leito' : 'Editar Leito'"></span>
                     </h2>
                 </div>
 
-                <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
-                    <span th:text="${mensagemSucesso}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <div th:if="${mensagemErro}" class="alert alert-danger" role="alert">
                     <span th:text="${mensagemErro}"></span>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/leitos/salvar}" method="POST" th:object="${leito}">
+                
+                <form id="leitoForm" th:action="@{/leitos/salvar}" th:object="${leito}" method="POST">
                     
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                        Por favor, corrija os erros abaixo.
+                    </div>
+
                     <input type="hidden" th:field="*{idQuarto}" /> 
 
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="numero" class="form-label"><i class="fas fa-hashtag me-1"></i> Número do Leito:</label>
-                            <input type="number" class="form-control" id="numero" th:field="*{numero}" required min="1" />
+                            <input type="number" class="form-control" th:field="*{numero}" required min="1" />
+                            <div class="text-danger small" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></div>
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="quarto" class="form-label"><i class="fas fa-hospital-alt me-1"></i> Número do Quarto:</label>
-                            <input type="number" class="form-control" id="quarto" th:field="*{quarto}" required min="1" />
+                            <input type="number" class="form-control" th:field="*{quarto}" required min="1" />
+                            <div class="text-danger small" th:if="${#fields.hasErrors('quarto')}" th:errors="*{quarto}"></div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="tipo" class="form-label"><i class="fas fa-list-alt me-1"></i> Tipo de Leito:</label>
-                            <select class="form-select" id="tipo" th:field="*{tipo}" required>
-                                <option value="" disabled selected>Selecione o tipo</option>
+                            <select class="form-select" th:field="*{tipo}" required>
+                                <option value="" disabled>Selecione o tipo</option>
                                 <option value="Enfermaria">Enfermaria</option>
                                 <option value="UTI">UTI</option>
                                 <option value="Apartamento">Apartamento</option>
                                 <option value="Particular">Particular</option>
                             </select>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></div>
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="status" class="form-label"><i class="fas fa-check-circle me-1"></i> Status do Leito:</label>
-                            <select class="form-select" id="status" th:field="*{status}" required>
-                                <option value="" disabled selected>Selecione o status</option>
+                            <select class="form-select" th:field="*{status}" required>
+                                <option value="" disabled>Selecione o status</option>
                                 <option value="Disponível">Disponível</option>
                                 <option value="Ocupado">Ocupado</option>
                                 <option value="Manutenção">Manutenção</option>
                             </select>
+                            <div class="text-danger small" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
                         </div>
                     </div>
 
@@ -72,9 +95,7 @@
                         <a th:href="@{/leitos/listar}" class="btn btn-secondary me-2"><i class="fas fa-times me-1"></i> Cancelar</a>
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> Salvar Leito</button>
                     </div>
-                </form>
-
-                <div class="text-center mt-4 pt-3 border-top">
+                </form> <div class="text-center mt-4 pt-3 border-top">
                     <a th:href="@{/leitos/listar}" class="btn btn-outline-primary btn-sm">Voltar à lista</a>
                 </div>
             </div>
@@ -82,6 +103,6 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
 </body>
-
 </html>

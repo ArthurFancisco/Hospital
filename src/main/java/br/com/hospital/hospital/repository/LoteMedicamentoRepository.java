@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import br.com.hospital.hospital.entity.LoteMedicamento;
 import java.time.LocalDate;
 
-public interface LoteMedicamentoRepository extends JpaRepository<LoteMedicamento, Integer> { 
+public interface LoteMedicamentoRepository extends JpaRepository<LoteMedicamento, Long> { 
     
     // 🚨 Este método é crucial e o nome deve ser exato (ou usar @Query)
     // Busca lotes com estoque > 0 e validade >= hoje, ordenados por validade (FEFO)

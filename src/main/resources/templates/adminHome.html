@@ -1,94 +1,258 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" th:href="@{/img/favicon.ico}" />
+
+    <link rel="icon" type="image/png" th:href="@{/img/faviconPadrao.png}" />
     <title>Dashboard | Sistema do Hospital</title>
-    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        /* --- SEUS ESTILOS (MANTIDOS) --- */
-        h1, h2, h3, h4, h5, h6, p, div {
-            cursor: default !important;
+        /* ------------------------------------------------------------------------------------------------ */
+        /* --- ESTILOS GERAIS E USABILIDADE --- */
+        /* ------------------------------------------------------------------------------------------------ */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        div {
             user-select: none !important;
             caret-color: transparent !important;
         }
 
-        h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus, p:focus, div:focus {
-            outline: none !important;
-            caret-color: transparent !important;
-        }
         body {
-            background-color: #eef2f7; 
-            padding-top: 56px;
+            background-color: #f7f9fc;
+            padding-top: 66px;
+            font-family: 'Inter', 'Roboto', sans-serif;
         }
+
+        /* ------------------------------------------------------------------------------------------------ */
+        /* --- NAVBAR E RODAPÉ --- */
+        /* ------------------------------------------------------------------------------------------------ */
         .navbar {
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: #1a535c !important;
+            /* Azul hospitalar mais profundo e sóbrio */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .card-link {
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card-link:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-        .card {
-            border-radius: 12px;
-            border: none;
-        }
-        .card-body h5 {
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .text-purple { color: #6f42c1 !important; }
-        .border-purple {
-            border-color: #6f42c1 !important;
-            border-width: 3px !important;
-        }
+
         .footer {
             padding: 20px 0;
             background-color: #ffffff;
             border-top: 1px solid #e9ecef;
             margin-top: 50px;
         }
-        
-        /* --- [MELHORIA] NOVOS ESTILOS ADICIONADOS --- */
 
-        /* 1. Estilo para o Banner de Boas-Vindas */
+        /* ------------------------------------------------------------------------------------------------ */
+        /* --- BANNER DE BOAS-VINDAS --- */
+        /* ------------------------------------------------------------------------------------------------ */
         .welcome-banner {
-            background-image: url('/img/hospitalAdmin.jpg'); /* << ADICIONE SUA IMAGEM AQUI */
+            /* ADICIONE SUA IMAGEM AQUI */
+            background-image: url('/img/hospitalAdmin.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
-        }
-        /* Sobreposição para legibilidade do texto sobre a imagem */
-        .welcome-overlay {
-            /* Isso escurece a imagem para o texto branco ficar legível */
-            background-color: rgba(71, 110, 151, 0.65); /* Azul escuro com 65% de opacidade */
-            border-radius: 8px;
-            backdrop-filter: blur(2px); /* Efeito de vidro fosco (opcional, mas moderno) */
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* 2. Estilo para os Cards de KPI (Indicadores) */
+        .welcome-overlay {
+            background-color: rgba(26, 83, 92, 0.75);
+            padding: 2rem;
+        }
+
+        .welcome-overlay h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        /* ------------------------------------------------------------------------------------------------ */
+        /* --- CARDS DE KPI (STATUS OPERACIONAL) --- */
+        /* ------------------------------------------------------------------------------------------------ */
+        .kpi-card {
+            border-radius: 12px;
+            /* Usa a borda lateral colorida */
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-3px);
+        }
+
         .kpi-card .card-body {
-            padding: 1.25rem;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
         .kpi-card h5 {
-            font-size: 1.1rem; /* Título do KPI */
-            color: #6c757d; /* Cinza */
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-top: 10px;
+            font-weight: 600;
         }
+
         .kpi-card .display-4 {
-            font-weight: 700 !important; /* Números bem destacados */
-            color: #343a40; /* Cor escura para o número */
+            font-weight: 800 !important;
+            color: #343a40;
+            font-size: 2.5rem;
+        }
+
+        /* Definição de cores de status mais profissionais */
+        .text-status-danger {
+            color: #dc3545;
+        }
+
+        .border-status-danger {
+            border-color: #dc3545 !important;
+        }
+
+        .text-status-success {
+            color: #28a745;
+        }
+
+        .border-status-success {
+            border-color: #28a745 !important;
+        }
+
+        .text-status-info {
+            color: #17a2b8;
+        }
+
+        .border-status-info {
+            border-color: #17a2b8 !important;
+        }
+
+        .text-status-warning {
+            color: #ffc107;
+        }
+
+        .border-status-warning {
+            border-color: #ffc107 !important;
+        }
+
+
+        /* ------------------------------------------------------------------------------------------------ */
+        /* --- ESTRUTURA DE ABAS (TABS) - LIMPO E SEM LINHA AZUL ABAIXO --- */
+        /* ------------------------------------------------------------------------------------------------ */
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            border: none;
+            transition: all 0.3s;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #1a535c;
+            border-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #1a535c;
+            background-color: transparent;
+            border: none;
+            position: relative;
+        }
+
+        /* Indicador sutil para a aba ativa */
+        .nav-tabs .nav-link.active::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -1px;
+            height: 3px;
+            width: 80%;
+            background-color: #1a535c;
+            border-radius: 2px;
+        }
+
+        /* ------------------------------------------------------------------------------------------------ */
+        /* --- CARDS DE MÓDULOS (Gerenciamento) - VISUAL FINAL COM BORDER-START --- */
+        /* ------------------------------------------------------------------------------------------------ */
+        .module-card .card {
+            border-radius: 12px;
+            /* Remove a borda padrão. A borda é definida pela classe border-start do Bootstrap. */
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+            /* Sombra padrão sutil */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Efeito de destaque no hover (Lift up) */
+        .module-card a:hover .card {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Ajustes para o hover do border-start (Escurece a cor da borda lateral) */
+        .module-card a:hover .card.border-primary {
+            border-color: #0056b3 !important;
+        }
+
+        .module-card a:hover .card.border-success {
+            border-color: #1e7e34 !important;
+        }
+
+        .module-card a:hover .card.border-warning {
+            border-color: #d39e00 !important;
+        }
+
+        .module-card a:hover .card.border-danger {
+            border-color: #bd2130 !important;
+        }
+
+        .module-card a:hover .card.border-info {
+            border-color: #117a8b !important;
+        }
+
+        .module-card a:hover .card.border-dark {
+            border-color: #1d2124 !important;
+        }
+
+        .module-card a:hover .card.border-purple {
+            border-color: #5a2e9b !important;
+        }
+
+        .module-card .card-body {
+            padding: 25px 20px;
+        }
+
+        .module-card h5 {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #343a40;
+            margin-top: 10px;
+        }
+
+        .module-card .card-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .module-card a {
+            text-decoration: none;
         }
     </style>
-    
 </head>
 
 <body>
@@ -96,7 +260,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/dashboard">
-                <i class="fas fa-hospital me-2"></i> Hospital Digital
+                <i class="fas fa-hospital-alt me-2"></i> Hospital Digital
             </a>
             <div class="ms-auto">
                 <a th:href="@{/logout}" class="btn btn-outline-light">
@@ -105,222 +269,251 @@
             </div>
         </div>
     </nav>
-    
-    <div class="container mt-4">
-        <div class="p-4 mb-4 text-white rounded-3 shadow-lg welcome-banner">
+
+    <div class="container mt-5">
+
+        <div class="p-4 mb-5 text-white rounded-3 welcome-banner">
             <div class="container-fluid py-3 welcome-overlay">
                 <h1 class="display-5 fw-bold" th:text="'Bem-vindo(a), ' + ${nomeUsuarioLogado ?: 'Admin'} + '!'">
                     Bem-vindo(a), Admin!
                 </h1>
-                <p class="col-md-8 fs-4">Acompanhe os indicadores-chave e acesse os módulos de gerenciamento.</p>
+                <p class="col-md-8 fs-4" style="opacity: 0.9;">Acompanhe os indicadores-chave e acesse os módulos de
+                    gerenciamento.</p>
             </div>
         </div>
 
-        <h2 class="mt-4 mb-3 text-center text-secondary border-bottom pb-2">
-            <i class="fas fa-chart-pie me-2"></i> Status Operacional (Em Tempo Real)
+        <h2 class="mt-4 mb-4 text-center text-secondary">
+            <i class="fas fa-tachometer-alt me-2"></i> Status Operacional
         </h2>
+
         <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
-            
+
             <div class="col">
-                <div class="card h-100 shadow-sm border-start border-danger border-5 kpi-card">
+                <div class="card h-100 shadow-sm border-start border-status-danger border-5 kpi-card">
                     <div class="card-body text-center">
-                        <i class="fas fa-bed fa-3x text-danger"></i>
+                        <i class="fas fa-bed fa-3x text-status-danger"></i>
                         <h5 class="card-title mt-2">Pacientes Internados</h5>
-                        <h2 class="display-4 fw-bold" th:text="${totalInternados ?: 0}">0</h2>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col">
-                <div class="card h-100 shadow-sm border-start border-success border-5 kpi-card">
-                    <div class="card-body text-center">
-                        <i class="fas fa-hospital-user fa-3x text-success"></i>
-                        <h5 class="card-title mt-2">Leitos Disponíveis</h5>
-                        <h2 class="display-4 fw-bold" th:text="${totalLeitosDisponiveis ?: 0}">0</h2>
+                        <h2 class="display-4" th:text="${totalInternados ?: 0}">0</h2>
                     </div>
                 </div>
             </div>
 
             <div class="col">
-                <div class="card h-100 shadow-sm border-start border-info border-5 kpi-card">
+                <div class="card h-100 shadow-sm border-start border-status-success border-5 kpi-card">
                     <div class="card-body text-center">
-                        <i class="fas fa-calendar-alt fa-3x text-info"></i>
-                        <h5 class="card-title mt-2">Consultas (Hoje)</h5>
-                        <h2 class="display-4 fw-bold" th:text="${totalConsultasHoje ?: 0}">0</h2>
+                        <i class="fas fa-hospital-alt fa-3x text-status-success"></i>
+                        <h5 class="card-title mt-2">Leitos Disponíveis</h5>
+                        <h2 class="display-4" th:text="${totalLeitosDisponiveis ?: 0}">0</h2>
                     </div>
                 </div>
             </div>
-            
+
             <div class="col">
-                <div class="card h-100 shadow-sm border-start border-warning border-5 kpi-card">
+                <div class="card h-100 shadow-sm border-start border-status-info border-5 kpi-card">
                     <div class="card-body text-center">
-                        <i class="fas fa-exclamation-triangle fa-3x text-warning"></i>
+                        <i class="fas fa-calendar-alt fa-3x text-status-info"></i>
+                        <h5 class="card-title mt-2">Consultas (Hoje)</h5>
+                        <h2 class="display-4" th:text="${totalConsultasHoje ?: 0}">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 shadow-sm border-start border-status-warning border-5 kpi-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x text-status-warning"></i>
                         <h5 class="card-title mt-2">Alertas de Estoque</h5>
-                        <h2 class="display-4 fw-bold" th:text="${totalAlertasEstoque ?: 0}">0</h2>
+                        <h2 class="display-4" th:text="${totalAlertasEstoque ?: 0}">0</h2>
                     </div>
                 </div>
             </div>
         </div>
 
-        <h2 class="mt-5 mb-4 text-center text-primary border-bottom pb-2">
-            <i class="fas fa-tasks me-2"></i> Módulos de Gerenciamento
+        <h2 class="mt-5 mb-4 text-center text-primary">
+            <i class="fas fa-layer-group me-2"></i> Módulos de Gerenciamento
         </h2>
 
-        <h3 class="mt-4 mb-4 text-center text-primary"><i class="fas fa-user-md me-2"></i> Atendimento e Clínica</h3>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-            
-            <div class="col">
-                <a href="/pacientes/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-primary border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-wheelchair fa-3x text-primary"></i>
-                            <h5 class="card-title">Gerenciar Pacientes</h5>
-                            <p class="card-text text-muted">Cadastro e histórico dos pacientes.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="col">
-                <a href="/consultas/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-info border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-calendar-check fa-3x text-info"></i>
-                            <h5 class="card-title">Gerenciar Consultas</h5>
-                            <p class="card-text text-muted">Agendamentos e histórico de atendimentos.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="col">
-                <a href="/internacoes/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-danger border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-bed fa-3x text-danger"></i>
-                            <h5 class="card-title">Gerenciar Internações</h5>
-                            <p class="card-text text-muted">Controle de entrada, saída e alta.</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
+        <ul class="nav nav-tabs justify-content-center mb-4" id="moduleTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="atendimento-tab" data-bs-toggle="tab" data-bs-target="#atendimento"
+                    type="button" role="tab" aria-controls="atendimento" aria-selected="true">
+                    <i class="fas fa-user-md me-1"></i> Atendimento e Clínica
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="rh-tab" data-bs-toggle="tab" data-bs-target="#rh" type="button" role="tab"
+                    aria-controls="rh" aria-selected="false">
+                    <i class="fas fa-building me-1"></i> Infraestrutura e RH
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="farmacia-tab" data-bs-toggle="tab" data-bs-target="#farmacia" type="button"
+                    role="tab" aria-controls="farmacia" aria-selected="false">
+                    <i class="fas fa-pills me-1"></i> Farmácia e Estoque
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="relatorios-tab" data-bs-toggle="tab" data-bs-target="#relatorios"
+                    type="button" role="tab" aria-controls="relatorios" aria-selected="false">
+                    <i class="fas fa-chart-line me-1"></i> Relatórios
+                </button>
+            </li>
+        </ul>
 
-        <h3 class="mt-4 mb-4 text-center text-success"><i class="fas fa-building me-2"></i> Infraestrutura e RH</h3>
-        <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
-            
-            <div class="col">
-                <a href="/leitos/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-success border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-hospital-user fa-3x text-success"></i>
-                            <h5 class="card-title">Gerenciar Leitos</h5>
-                            <p class="card-text text-muted">Disponibilidade e ocupação de quartos.</p>
-                        </div>
+        <div class="tab-content" id="moduleTabsContent">
+
+            <div class="tab-pane fade show active" id="atendimento" role="tabpanel" aria-labelledby="atendimento-tab">
+                <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 module-card">
+
+                    <div class="col">
+                        <a href="/pacientes/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-primary border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-user-injured fa-3x text-primary"></i>
+                                    <h5 class="card-title">Gerenciar Pacientes</h5>
+                                    <p class="card-text text-muted">Cadastro e histórico dos pacientes.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            
-            <div class="col">
-                <a href="/medicos/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-warning border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-user-tie fa-3x text-warning"></i>
-                            <h5 class="card-title">Gerenciar Médicos</h5>
-                            <p class="card-text text-muted">Cadastro e especialidades dos profissionais.</p>
-                        </div>
+
+                    <div class="col">
+                        <a href="/consultas/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-info border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-calendar-check fa-3x text-info"></i>
+                                    <h5 class="card-title">Gerenciar Consultas</h5>
+                                    <p class="card-text text-muted">Agendamentos e histórico de atendimentos.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            
-            <div class="col">
-                <a href="/funcionarios/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-secondary border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-users fa-3x text-secondary"></i>
-                            <h5 class="card-title">Gerenciar Funcionários</h5>
-                            <p class="card-text text-muted">Cadastro da equipe administrativa e de apoio.</p>
-                        </div>
+
+                    <div class="col">
+                        <a href="/internacoes/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-danger border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-procedures fa-3x text-danger"></i>
+                                    <h5 class="card-title">Gerenciar Internações</h5>
+                                    <p class="card-text text-muted">Controle de entrada, saída e alta.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
+                </div>
             </div>
 
-            <div class="col">
-                <a th:href="@{/admin/usuarios/listar}" class="card-link"> 
-                    <div class="card h-100 shadow-sm border-start border-danger border-5"> 
-                        <div class="card-body text-center">
-                            <i class="fas fa-user-shield fa-3x text-danger"></i>
-                            <h5 class="card-title">Gerenciar Usuários</h5>
-                            <p class="card-text text-muted">Controle de logins e permissões.</p>
-                        </div>
+            <div class="tab-pane fade" id="rh" role="tabpanel" aria-labelledby="rh-tab">
+                <div class="row row-cols-1 row-cols-md-4 g-4 mb-5 module-card">
+
+                    <div class="col">
+                        <a href="/leitos/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-success border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-hospital-alt fa-3x text-success"></i>
+                                    <h5 class="card-title">Gerenciar Leitos</h5>
+                                    <p class="card-text text-muted">Disponibilidade e ocupação de quartos.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            
-        </div>
-        
-        <h3 class="mt-4 mb-4 text-center text-dark"><i class="fas fa-pills me-2"></i> Farmácia e Prescrição</h3>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-            
-            <div class="col">
-                <a href="/medicamentos/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-dark border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-boxes fa-3x text-dark"></i>
-                            <h5 class="card-title">Cadastro de Medicamentos</h5>
-                            <p class="card-text text-muted">Lista e detalhes dos itens em estoque.</p>
-                        </div>
+
+                    <div class="col">
+                        <a href="/medicos/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-warning border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-user-tie fa-3x text-warning"></i>
+                                    <h5 class="card-title">Gerenciar Médicos</h5>
+                                    <p class="card-text text-muted">Cadastro e especialidades dos profissionais.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
+
+                    <div class="col">
+                        <a href="/funcionarios/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-secondary border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-users fa-3x text-secondary"></i>
+                                    <h5 class="card-title">Gerenciar Funcionários</h5>
+                                    <p class="card-text text-muted">Cadastro da equipe administrativa e de apoio.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col">
+                        <a th:href="@{/admin/usuarios/listar}" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-dark border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-user-shield fa-3x text-dark"></i>
+                                    <h5 class="card-title">Gerenciar Usuários</h5>
+                                    <p class="card-text text-muted">Controle de logins e permissões.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="col">
-                <a href="/movMedicamentos/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-dark border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-exchange-alt fa-3x text-dark"></i>
-                            <h5 class="card-title">Movimentação de Estoque</h5>
-                            <p class="card-text text-muted">Registros de entrada e saída de itens.</p>
-                        </div>
+            <div class="tab-pane fade" id="farmacia" role="tabpanel" aria-labelledby="farmacia-tab">
+                <div class="row row-cols-1 row-cols-md-3 g-4 mb-5 justify-content-center module-card">
+
+                    <div class="col-md-4">
+                        <a href="/medicamentos/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-dark border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-boxes fa-3x text-dark"></i>
+                                    <h5 class="card-title">Cadastro de Medicamentos</h5>
+                                    <p class="card-text text-muted">Lista e detalhes dos itens em estoque.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
+
+                    <div class="col-md-4">
+                        <a href="/movMedicamentos/listar" class="card-link">
+                            <div class="card h-100 shadow-sm border-start border-dark border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-exchange-alt fa-3x text-dark"></i>
+                                    <h5 class="card-title">Movimentação de Estoque</h5>
+                                    <p class="card-text text-muted">Registros de entrada e saída de itens.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="col">
-                <a href="/prescricoes/listar" class="card-link">
-                    <div class="card h-100 shadow-sm border-start border-dark border-5">
-                        <div class="card-body text-center">
-                            <i class="fas fa-file-prescription fa-3x text-dark"></i>
-                            <h5 class="card-title">Prescrições</h5>
-                            <p class="card-text text-muted">Cadastro e gerenciamento de prescrições médicas.</p>
-                        </div>
+            <div class="tab-pane fade" id="relatorios" role="tabpanel" aria-labelledby="relatorios-tab">
+                <div class="row row-cols-1 g-4 mb-5 justify-content-center module-card">
+
+                    <div class="col-md-4">
+                        <a href="/relatorios/listar" class="card-link">
+                            <div class="card h-100 shadow-lg border-start border-purple border-5">
+                                <div class="card-body">
+                                    <i class="fas fa-clipboard-list fa-3x mb-2" style="color: #6f42c1 !important;"></i>
+                                    <h5 class="card-title">Relatórios Administrativos</h5>
+                                    <p class="card-text text-muted">Geração e consulta de estatísticas operacionais.</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-        </div>
-        
-        <h3 class="mt-4 mb-4 text-center text-purple"><i class="fas fa-chart-line me-2"></i> Relatórios</h3>
-        <div class="row row-cols-1 g-4 mb-5 justify-content-center">
-            
-            <div class="col-md-4"> 
-                <a href="/relatorios/listar" class="card-link">
-                    <div class="card h-100 shadow-lg border-purple border-5"> <div class="card-body text-center">
-                            <i class="fas fa-clipboard-list fa-3x text-purple mb-2"></i>
-                            <h5 class="card-title">Relatórios Administrativos</h5>
-                            <p class="card-text text-muted">Geração e consulta de estatísticas operacionais.</p>
-                        </div>
-                    </div>
-                </a>
+
+                </div>
             </div>
 
         </div>
     </div>
-    
+
     <footer class="footer">
         <div class="container text-center">
-            <span class="text-muted">Sistema de Gestão Hospitalar © 2025 | Desenvolvido com Spring Boot por Arthur e Elias.</span>
+            <span class="text-muted">Sistema de Gestão Hospitalar © 2025 | Desenvolvido com Spring Boot por Arthur e
+                Elias.</span>
         </div>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

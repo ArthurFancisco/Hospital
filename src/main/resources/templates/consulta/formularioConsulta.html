@@ -2,20 +2,26 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${consulta.idConsulta != null ? 'Editar Consulta' : 'Nova Consulta'}"></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/consulta/styleForm.css}">
 </head>
-<body class="bg-light">
+<body>
 
 <div class="container mt-5">
     
-    <div class="card shadow-sm p-4">
-        <h2 class="text-center text-info mb-4">
-            <i class="fas fa-calendar-check me-2"></i> 
+    <!-- Aplicado o estilo patient-card CLARO -->
+    <div class="card patient-card shadow-lg p-4">
+        
+        <!-- Título com texto escuro e ícone azul -->
+        <h2 class="text-center mb-4">
+            <i class="fas fa-calendar-check me-2 text-info"></i> 
             <span th:text="${consulta.idConsulta != null ? 'Editar Agendamento' : 'Novo Agendamento de Consulta'}"></span>
         </h2>
         
+        <!-- Alerta padrão (o fundo claro do card garante a visibilidade) -->
         <div th:if="${mensagemErro}" class="alert alert-danger" role="alert">
             <span th:text="${mensagemErro}"></span>
         </div>
@@ -26,6 +32,7 @@
 
             <div class="mb-3">
                 <label for="dataehoraConsulta" class="form-label"><i class="far fa-clock me-1"></i> Data e Hora</label>
+                <!-- Campos estilizados para o tema claro -->
                 <input type="datetime-local" class="form-control" th:field="*{dataehoraConsulta}" required />
             </div>
 
@@ -64,9 +71,11 @@
             </div>
         </form>
 
+        <!-- Botão de voltar ajustado para o tema claro -->
         <div align="center" class="mt-4">
             <a th:href="@{/consultas/listar}" class="btn btn-outline-info btn-sm">Voltar à lista</a>
         </div>
+        
     </div>
 </div>
 

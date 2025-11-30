@@ -15,10 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import br.com.hospital.hospital.DTO.PacienteCadastroDTO;
 import br.com.hospital.hospital.entity.Consulta;
 import br.com.hospital.hospital.entity.Paciente;
-import br.com.hospital.hospital.entity.Prescricao;
 import br.com.hospital.hospital.repository.ConsultaRepository;
 import br.com.hospital.hospital.repository.PacienteRepository;
-import br.com.hospital.hospital.repository.PrescricaoRepository;
 import br.com.hospital.hospital.service.PacienteService;
 import jakarta.servlet.http.HttpSession;
 
@@ -27,8 +25,6 @@ public class PacienteController {
 
     @Autowired
     private PacienteService pacienteService;
-    @Autowired
-    private PrescricaoRepository prescricaoRepository;
     @Autowired
     private ConsultaRepository consultaRepository;
     @Autowired
@@ -87,24 +83,6 @@ public class PacienteController {
         model.addAttribute("listaDeConsultas", consultas);
 
         return "pacienteHome/consultasPaciente"; 
-    }
-
-    // Rota para Minhas Prescrições
-    @GetMapping("/minhasPrescricoes")
-    public String minhasPrescricoes(HttpSession session, Model model) {
-        
-        Paciente pacienteLogado = getPacienteLogado(session);
-
-        if (pacienteLogado == null) {
-            return "redirect:/login"; // Redireciona se não estiver logado
-        }
-
-        // Busca as Prescrições do Paciente logado
-        List<Prescricao> prescricoes = prescricaoRepository.findByPaciente(pacienteLogado); 
-        
-        model.addAttribute("listaDePrescricoes", prescricoes);
-
-        return "pacienteHome/precricaoPaciente"; 
     }
 
     // Rota para Meus Dados Cadastrais
@@ -180,7 +158,7 @@ public class PacienteController {
         try {
             pacienteService.cadastrarNovoPaciente(dto); 
             ra.addFlashAttribute("mensagemSucesso", "Paciente e Acesso criados com sucesso!");
-            return "redirect:/login"; 
+            return "redirect:/pacientes/listar"; 
         } catch (Exception e) {
             System.err.println("Erro ao salvar: " + e.getMessage()); 
             ra.addFlashAttribute("mensagemErro", "Erro ao cadastrar: " + e.getMessage());

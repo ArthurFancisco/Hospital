@@ -45,5 +45,5 @@ public class Internacao {
     private String motivoInternacao;
 
     @Column(nullable = false, length = 20)
-    private String status; 
+    private String status = "Ativa"; 
 }

@@ -6,25 +6,53 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lista de Leitos</title>
+    <script src="https://cdn.tailwindcss.com"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    
     <style>
-        /* Estilo para a barra de cabeçalho da tabela */
-        .bg-primary.text-white {
-            background-color: #0d6efd !important;
+        /* ------------------------------------------------------------------ */
+        /* ESTILOS PROFISSIONAIS DE FUNDO E TRANSPARÊNCIA */
+        /* ------------------------------------------------------------------ */
+        body {
+            /* NOTA: Verifique se sua imagem está em /static/img/ImgQuartos.jpg
+               A sintaxe th:href não funciona dentro de <style>.
+               Usamos o caminho de URL absoluto que o Spring irá servir.
+            */
+            background-image: url('/img/ImgQuartos.jpg');
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed; 
+            background-position: center center;
+            min-height: 100vh;
+            position: relative; /* Necessário para o overlay */
         }
 
-        /* Animação e Estilos de Badge (Opcional, mas mantém a estética) */
+        /* ... (O resto do seu CSS permanece igual) ... */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+        }
+        .card-container {
+            background: rgba(255, 255, 255, 0.4); 
+            padding: 2rem;
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25); 
+        }
+        .container {
+            animation: fadeIn 0.8s ease-out;
+        }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .container {
-            animation: fadeIn 0.8s ease-out;
+        .bg-primary.text-white {
+            background-color: #0d6efd !important;
         }
-        
         .badge {
             font-size: 0.85em;
             padding: 0.4em 0.7em;
@@ -33,13 +61,14 @@
     </style>
 </head>
 
-<body class="bg-light">
-    <div class="container my-5 table-responsive">
+<body class="min-h-screen">
+    <div class="container my-5 table-responsive card-container">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-primary mb-0">
                 <i class="fas fa-bed me-2"></i> Lista de Leitos
             </h2>
+            <!--Pronto-->
             <a th:href="@{${session.userHomeUrl}}" class="btn btn-outline-secondary">
                 <i class="fas fa-home me-1"></i> Voltar à página inicial
             </a>
@@ -54,7 +83,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
             
             <a th:href="@{/leitos/criar}" class="btn btn-primary shadow-sm">
                 <i class="fas fa-plus me-1"></i> Cadastrar Novo Leito
@@ -78,34 +107,41 @@
                     <th scope="col" class="text-center">Ações</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="leitosTableBody">
                 <tr th:each="leito : ${leitos}">
-                    <td class="text-center" th:text="${leito.idQuarto}">*</td>
-                    <td class="text-center" th:text="${leito.numero}">*</td>
-                    <td class="text-center" th:text="${leito.quarto}">*</td>
-                    <td class="text-center" th:text="${leito.tipo}">*</td>
+                    <td class="text-center" th:text="${leito.idQuarto}"></td>
+                    <td class="text-center" th:text="${leito.numero}"></td>
+                    <td class="text-center" th:text="${leito.quarto}"></td>
+                    <td class="text-center" th:text="${leito.tipo}"></td>
                     <td class="text-center">
-                        <span th:classappend="${leito.status == 'Disponível'} ? 'bg-success' : 
-                                               (${leito.status == 'Ocupado'} ? 'bg-danger' : 'bg-warning text-dark')"
-                                class="badge rounded-pill"
-                                th:text="${leito.status}">
+                        <span class="badge rounded-pill" 
+                              th:text="${leito.status}"
+                              th:classappend="${leito.status == 'Disponível' ? 'bg-success' : 
+                                               (leito.status == 'Ocupado' ? 'bg-danger' : 
+                                               (leito.status == 'Manutenção' ? 'bg-warning text-dark' : 'bg-secondary'))}">
+                            Status
                         </span>
                     </td>
-                    <td class="text-center d-flex justify-content-center gap-2">
+                    <td class="text-center" style="min-width: 120px;">
                         <a th:href="@{/leitos/editar/{id}(id=${leito.idQuarto})}" class="btn btn-sm btn-outline-primary" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
                         <a th:href="@{/leitos/excluir/{id}(id=${leito.idQuarto})}" class="btn btn-sm btn-outline-danger" title="Excluir"
-                            onclick="return confirm('Deseja realmente excluir este leito?')">
+                           onclick="return confirm('Deseja realmente excluir este leito?');">
                             <i class="fas fa-trash-alt"></i>
                         </a>
                     </td>
                 </tr>
             </tbody>
-            <tfoot th:if="${#lists.isEmpty(leitos)}">
-                <tr>
+            <tfoot id="leitosTableFooter">
+                <tr th:if="${#lists.isEmpty(leitos)}">
                     <td colspan="6" class="text-center p-4 text-muted">
-                        <i class="fas fa-search-minus me-1"></i> Nenhum leito cadastrado ainda.
+                        <i class="fas fa-info-circle me-1"></i> Nenhum leito cadastrado.
+                    </td>
+                </tr>
+                <tr id="filtroVazio" style="display: none;">
+                    <td colspan="6" class="text-center p-4 text-muted">
+                         <i class="fas fa-search-minus me-1"></i> Nenhum leito encontrado com o filtro atual.
                     </td>
                 </tr>
             </tfoot>
@@ -116,38 +152,58 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script>
+    <script th:inline="javascript">
         $(document).ready(function() {
             var $input = $('#filtroInput');
-            var $tabela = $('#tabelaLeitos');
-            var $linhas = $tabela.find('tbody tr');
-            
-            // 1. Função principal de filtro
+            var $linhas = $('#leitosTableBody tr');
+            var $rodapeFiltro = $('#filtroVazio');
+            var $rodapeOriginalVazio = $('#leitosTableFooter tr:not(#filtroVazio)');
+
             $input.on('keyup', function() {
                 var termo = $(this).val().toLowerCase().trim();
+                let resultsFound = false;
 
                 $linhas.each(function() {
                     var $linha = $(this);
-                    // Captura o texto de todas as células da linha para a pesquisa
                     var textoLinha = $linha.text().toLowerCase();
 
-                    // Verifica se o termo de pesquisa está em qualquer parte do texto da linha
                     if (textoLinha.indexOf(termo) > -1) {
                         $linha.show();
+                        resultsFound = true;
                     } else {
                         $linha.hide();
                     }
                 });
+
+                // Controla a exibição das mensagens de rodapé
+                if (resultsFound) {
+                    $rodapeFiltro.hide(); // Esconde "filtro vazio"
+                    $rodapeOriginalVazio.hide(); // Esconde "lista vazia"
+                } else if (termo !== '') {
+                    // Se não achou nada E está filtrando
+                    $rodapeFiltro.show();
+                    $rodapeOriginalVazio.hide();
+                } else {
+                    // Se não achou nada E o filtro está limpo (significa que a lista original estava vazia)
+                    $rodapeFiltro.hide();
+                    $rodapeOriginalVazio.show();
+                }
             });
 
             // 2. Função para limpar o filtro
             window.limparFiltro = function() {
                 $input.val(''); // Limpa o campo
-                $linhas.show();  // Exibe todas as linhas
-                $input.focus();  // Foca no campo após limpar
+                $linhas.show(); // Exibe todas as linhas
+                $rodapeFiltro.hide(); // Esconde a mensagem de filtro vazio
+                
+                // Mostra a mensagem de "lista vazia" original, se aplicável
+                if ($linhas.length === 0) {
+                     $rodapeOriginalVazio.show();
+                }
+                
+                $input.focus(); // Foca no campo após limpar
             };
         });
     </script>
 </body>
-
 </html>

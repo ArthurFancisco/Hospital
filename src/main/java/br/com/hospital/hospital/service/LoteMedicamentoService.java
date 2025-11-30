@@ -123,12 +123,12 @@ public class LoteMedicamentoService {
     // ----------------------------------------------------
     // 4. MÉTODOS CRUD BÁSICOS DE LOTE
     // ----------------------------------------------------
-    public LoteMedicamento findById(Integer id) {
+    public LoteMedicamento findById(Long id) {
         return loteMedicamentoRepository.findById(id).orElse(null);
     }
 
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         loteMedicamentoRepository.deleteById(id);
     }
 }
