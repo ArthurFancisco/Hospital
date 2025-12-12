@@ -30,4 +30,8 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Integer> {
        "ORDER BY c.dataehoraConsulta ASC")
 List<Consulta> buscarConsultasDoDia(@Param("inicio") LocalDateTime inicio,
                                     @Param("fim") LocalDateTime fim);
+
+                                    // Use JOIN FETCH para carregar a entidade 'atendimento' junto com a 'consulta'
+    @Query("SELECT c FROM Consulta c LEFT JOIN FETCH c.atendimento")
+    List<Consulta> findAllWithAtendimento();
 }

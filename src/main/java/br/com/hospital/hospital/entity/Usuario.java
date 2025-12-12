@@ -48,4 +48,11 @@ public class Usuario {
                 return null;
         }
     }
+    @Override
+    public String toString() {
+        return "Usuario [idUsuario=" + id + 
+            ", username=" + username + 
+            ", role=" + role + "]"; 
+            // Remova ou substitua qualquer referência a Medico, Paciente, etc.
+    }
 }

@@ -5,49 +5,9 @@
     <title>Lista de Usuários</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/usuario/styleLista.css}">
     
-    <style>
-        /* Estilos da Tabela */
-        .table-custom { 
-            margin-top: 20px; 
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .table-custom th { 
-            background-color: #0d6efd; 
-            color: white; 
-        }
-        .table-custom tr:hover {
-            background-color: #f0f8ff; 
-        }
 
-        /* Animação de Entrada (Fade-in e Slide-up) */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .container {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        /* Animação de Hover dos Botões de Ação */
-        .btn-action {
-            transition: transform 0.2s;
-        }
-        .btn-action:hover {
-            transform: scale(1.1);
-        }
-
-        /* Estilo para Badges (Roles) */
-        .badge {
-            font-size: 0.85em;
-            padding: 0.4em 0.7em;
-            font-weight: 600;
-        }
-        
-    </style>
 </head>
 <body>
     <div class="container mt-5">
@@ -121,38 +81,9 @@
             </table>
         </div>
     </div>
+    <script th:src="@{/js/usuario/lista.js}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            var $input = $('#filtroInput');
-            var $tabela = $('#tabelaUsuarios');
-            var $linhas = $tabela.find('tbody tr');
-            
-            // 1. Função principal de filtro
-            $input.on('keyup', function() {
-                var termo = $(this).val().toLowerCase().trim();
-
-                $linhas.each(function() {
-                    var $linha = $(this);
-                    var textoLinha = $linha.text().toLowerCase();
-
-                    // Verifica se o termo de pesquisa está em qualquer parte do texto da linha
-                    if (textoLinha.indexOf(termo) > -1) {
-                        $linha.show();
-                    } else {
-                        $linha.hide();
-                    }
-                });
-            });
-
-            // 2. Função para limpar o filtro
-            window.limparFiltro = function() {
-                $input.val('');
-                $linhas.show();
-            };
-        });
-    </script>
 </body>
 </html>

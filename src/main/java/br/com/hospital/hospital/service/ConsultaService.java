@@ -32,7 +32,7 @@ public class ConsultaService{
 
     //Excluir
     public void deleteById(Integer id){
-        atendimentoRepository.deleteByIdConsulta_IdConsulta(id);
+        atendimentoRepository.deleteByConsulta_IdConsulta(id);
         consultaRepository.deleteById(id);
     }
 
@@ -74,4 +74,12 @@ public List<Consulta> buscarPorPaciente(Paciente paciente) {
 
         return consultaRepository.buscarConsultasDoDia(inicio, fim);
     }
+
+
+// Novo método que traz a consulta JUNTO com o atendimento
+public List<Consulta> buscarTodasComAtendimento() {
+    // Esse método deve chamar aquele que você criou no Repository
+    // Se no repository você chamou de 'findAllWithAtendimento', use assim:
+    return consultaRepository.findAllWithAtendimento(); 
+}
 }

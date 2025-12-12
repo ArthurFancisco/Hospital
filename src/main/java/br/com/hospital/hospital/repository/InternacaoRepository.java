@@ -24,7 +24,7 @@ public interface InternacaoRepository extends JpaRepository<Internacao, Integer>
     long countByDataEntradaBetween(LocalDateTime dataInicio, LocalDateTime dataFim);
 
     // ✅ dataAlta é LocalDate
-    long countByDataAltaBetween(LocalDate dataInicio, LocalDate dataFim);
+    long countByDataAltaBetween(LocalDateTime dataInicio, LocalDateTime dataFim);
 
     @Query("SELECT COUNT(i) FROM Internacao i WHERE i.dataAlta IS NULL")
 int countInternacoesAtivas();

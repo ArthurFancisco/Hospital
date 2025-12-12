@@ -32,7 +32,7 @@ public class Paciente{
     @Column(nullable = false, length = 40)
     private String cpfPaciente;
 
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false, length = 4000)
     private String enderecoPaciente;
 
     @Column(nullable = false, length = 40, name = "tiposanguinio_paciente")

@@ -39,7 +39,7 @@ public class Internacao {
     private LocalDateTime dataEntrada; 
 
     @Column(nullable = true)
-    private LocalDate dataAlta;
+    private LocalDateTime  dataAlta;
 
     @Column(nullable = false, length = 255)
     private String motivoInternacao;

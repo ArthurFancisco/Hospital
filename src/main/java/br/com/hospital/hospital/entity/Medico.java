@@ -36,4 +36,11 @@ public class Medico {
     @OneToOne(cascade = CascadeType.ALL) // 'Cascade' salva o 'Usuario' automaticamente
     @JoinColumn(name = "usuario_fk_id", referencedColumnName = "id")
     private Usuario usuario;
+    @Override
+
+public String toString() {
+    return "Medico [idMedico=" + idMedico + 
+           ", nomeMedico=" + nomeMedico + 
+           ", idUsuario=" + (usuario != null ? usuario.getId() : "null") + "]";
+}
 }

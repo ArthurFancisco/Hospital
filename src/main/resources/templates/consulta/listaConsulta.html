@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/consulta/styleLista.css}">
+    
 </head>
 <body>
 
@@ -78,17 +79,17 @@
     <td class="text-center" style="min-width: 220px;">
 
         <!-- Botão Registrar ou Ver Atendimento -->
-        <a th:if="${consulta.atendimento == null}"
-           th:href="@{/atendimento/iniciar/{id}(id=${consulta.idConsulta})}"
-           class="btn btn-info btn-sm me-1">
-            <i class="fas fa-file-medical"></i> Registrar Atendimento
-        </a>
+        <a th:if="${consulta.statusConsulta == 'AGENDADA' and consulta.atendimento == null}"
+       th:href="@{/atendimento/iniciar/{id}(id=${consulta.idConsulta})}"
+       class="btn btn-info btn-sm me-1">
+        <i class="fas fa-file-medical"></i> Registrar Atendimento
+    </a>
 
-        <a th:if="${consulta.atendimento != null}"
-           th:href="@{/atendimento/ver/{id}(id=${consulta.atendimento.idAtendimento})}"
-           class="btn btn-primary btn-sm me-1">
-            <i class="fas fa-notes-medical"></i> Ver Atendimento
-        </a>
+    <a th:if="${consulta.statusConsulta == 'ATENDIDA' and consulta.atendimento != null}"
+    th:href="@{/atendimento/detalhes/{idAtendimento}(idAtendimento=${consulta.atendimento.idAtendimento})}"
+    class="btn btn-primary btn-sm me-1">
+        <i class="fas fa-notes-medical"></i> Ver Atendimento
+    </a>
 
         <a th:href="@{/consultas/editar/{id}(id=${consulta.idConsulta})}"
            class="btn btn-warning btn-sm me-1">
@@ -115,48 +116,9 @@
         </div>
     </div>
 </div>
-
+<script th:src="@{/js/consulta/lista.js}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    // Script de filtro mantido
-    $(document).ready(function() {
-        // Alerta: substituição do confirm() nativo por um console.warn (pois alerts não funcionam em iframes)
-        $('a.btn-danger').on('click', function(e) {
-            // Se o ambiente não for o Canvas (o que é o caso para um arquivo HTML simples), usamos o confirm() nativo.
-            // Para produção com Thymeleaf, seu backend garantirá o funcionamento do confirm.
-            if (typeof __app_id === 'undefined' && !confirm('Deseja realmente excluir esta consulta?')) {
-                e.preventDefault();
-            }
-        });
-        
-        var $input = $('#filtroInput');
-        var $tabela = $('#tabelaConsultas');
-        var $linhas = $tabela.find('tbody tr');
-        
-        $input.on('keyup', function() {
-            var termo = $(this).val().toLowerCase().trim();
-
-            $linhas.each(function() {
-                var $linha = $(this);
-                var textoLinha = $linha.text().toLowerCase();
-
-                if (textoLinha.indexOf(termo) > -1) {
-                    $linha.show();
-                } else {
-                    $linha.hide();
-                }
-            });
-        });
-
-        window.limparFiltro = function() {
-            $input.val('');
-            $linhas.show();
-            $input.focus();
-        };
-    });
-</script>
 
 </body>
 </html>

@@ -76,4 +76,41 @@ public class PacienteService {
     public Optional<Paciente> findById(Integer id) {
         return pacienteRepository.findById(id);
     }
+    public void atualizarPaciente(PacienteCadastroDTO dto) {
+        // 1. Garante que o ID existe para a atualização
+        if (dto.getIdPaciente() == null) {
+            throw new IllegalArgumentException("ID do Paciente é obrigatório para atualização.");
+        }
+
+        // 2. Busca a entidade Paciente existente
+        Optional<Paciente> pacienteOpt = pacienteRepository.findById(dto.getIdPaciente());
+
+        if (pacienteOpt.isEmpty()) {
+            throw new RuntimeException("Paciente com ID " + dto.getIdPaciente() + " não encontrado para atualização.");
+        }
+
+        Paciente pacienteExistente = pacienteOpt.get();
+
+        // 3. Mapeia/Atualiza os campos da entidade com base no DTO
+        // IMPORTANTE: Aqui, você só atualiza os campos do Paciente, não do Usuário/Login.
+        pacienteExistente.setNomePaciente(dto.getNomePaciente());
+        
+        // ⚠️ ATENÇÃO: Se o seu backend exige CPF e Telefone sem máscara, 
+        // você deve limpá-los antes de salvar.
+        // Se o seu DTO já tem um método para limpar, use-o. Senão, faça aqui:
+        pacienteExistente.setCpfPaciente(dto.getCpfPaciente().replaceAll("[^0-9]", ""));
+        pacienteExistente.setTelefonePaciente(dto.getTelefonePaciente().replaceAll("[^0-9]", ""));
+        
+        // ----------------------------------------------------
+        // Atualize todos os campos de Paciente aqui:
+        // ----------------------------------------------------
+        pacienteExistente.setNascPaciente(dto.getNascPaciente());
+        pacienteExistente.setEnderecoPaciente(dto.getEnderecoPaciente());
+        pacienteExistente.setSexoPaciente(dto.getSexoPaciente());
+        pacienteExistente.setPesoPaciente(dto.getPesoPaciente());
+        pacienteExistente.setTipoSanguinioPaciente(dto.getTipoSanguinioPaciente());
+        
+        // 4. Salva a entidade atualizada no banco de dados
+        pacienteRepository.save(pacienteExistente);
+    }
 }

@@ -89,58 +89,57 @@ public class RelatorioService {
 
         
         // --- CONVERSÃO PARA LocalDateTime ---
-        LocalDateTime inicioPeriodo = dataInicio.atStartOfDay(); 
-        LocalDateTime fimPeriodo = dataFim.atTime(23, 59, 59); 
+        // --- CONVERSÃO PARA LocalDateTime (substituir a chamada antiga) ---
+LocalDateTime inicioPeriodo = dataInicio.atStartOfDay();
+LocalDateTime fimPeriodo  = dataFim.atTime(23, 59, 59);
 
+// 1. ESTATÍSTICAS DE CONSULTAS (mantém como já estava)
+List<Object[]> consultasPorMedico = consultaRepository.countConsultasByMedicoAndPeriodo(inicioPeriodo, fimPeriodo);
+sb.append("1. ESTATÍSTICAS DE CONSULTAS (Período: ").append(dataInicio).append(" - ").append(dataFim).append(")\n");
+if (!consultasPorMedico.isEmpty()) {
+    for (Object[] resultado : consultasPorMedico) {
+        sb.append("   - Médico: ").append(resultado[0]).append(" | Total de Consultas: ").append(resultado[1]).append("\n");
+    }
+} else {
+    sb.append("   - Nenhuma consulta encontrada no período.\n");
+}
+sb.append("\n");
 
-        // 1. ESTATÍSTICAS DE CONSULTAS
-        List<Object[]> consultasPorMedico = consultaRepository.countConsultasByMedicoAndPeriodo(inicioPeriodo, fimPeriodo);
-        sb.append("1. ESTATÍSTICAS DE CONSULTAS (Período: ").append(dataInicio).append(" - ").append(dataFim).append(")\n");
-        if (!consultasPorMedico.isEmpty()) {
-            for (Object[] resultado : consultasPorMedico) {
-                sb.append("   - Médico: ").append(resultado[0]).append(" | Total de Consultas: ").append(resultado[1]).append("\n");
-            }
-        } else {
-            sb.append("   - Nenhuma consulta encontrada no período.\n");
-        }
-        sb.append("\n");
+// 2. TAXA DE OCUPAÇÃO DE LEITOS (sem alteração)
+long totalLeitos = leitoService.countAllLeitos();
+long leitosOcupados = leitoService.countLeitosOcupados();
+double taxaOcupacao = leitoService.calcularTaxaOcupacaoAtual();
 
+sb.append("2. TAXA DE OCUPAÇÃO DE LEITOS (Dados Atuais)\n");
+sb.append("   - Total de Leitos: ").append(totalLeitos).append("\n");
+sb.append("   - Leitos Ocupados: ").append(leitosOcupados).append("\n");
+sb.append("   - Taxa de Ocupação: ").append(String.format("%.2f", taxaOcupacao)).append("%%\n");
+sb.append("\n");
 
-        // 2. TAXA DE OCUPAÇÃO DE LEITOS
-        long totalLeitos = leitoService.countAllLeitos(); 
-        long leitosOcupados = leitoService.countLeitosOcupados();
-        double taxaOcupacao = leitoService.calcularTaxaOcupacaoAtual();
-        
-        sb.append("2. TAXA DE OCUPAÇÃO DE LEITOS (Dados Atuais)\n");
-        sb.append("   - Total de Leitos: ").append(totalLeitos).append("\n");
-        sb.append("   - Leitos Ocupados: ").append(leitosOcupados).append("\n");
-        sb.append("   - Taxa de Ocupação: ").append(String.format("%.2f", taxaOcupacao)).append("%%\n");
-        sb.append("\n");
+// 3. CONSUMO DE MEDICAMENTOS (usa inicioPeriodo / fimPeriodo)
+List<Object[]> consumo = movMedicamentoRepository.sumSaidasByMedicamentoAndPeriodo(inicioPeriodo, fimPeriodo);
+sb.append("3. CONSUMO DE MEDICAMENTOS (Período: ").append(dataInicio).append(" - ").append(dataFim).append(")\n");
+if (!consumo.isEmpty()) {
+    for (Object[] resultado : consumo) {
+        sb.append("   - ").append(resultado[0]).append(" | Quantidade Consumida: ").append(resultado[1]).append("\n");
+    }
+} else {
+    sb.append("   - Nenhum consumo de medicamento registrado no período.\n");
+}
+sb.append("\n");
 
+// 4. ESTATÍSTICAS DE INTERNAÇÕES
+// - novasInternacoes (usa dataEntrada: LocalDateTime)
+long novasInternacoes = internacaoRepository.countByDataEntradaBetween(inicioPeriodo, fimPeriodo);
 
-        // 3. CONSUMO DE MEDICAMENTOS
-        List<Object[]> consumo = movMedicamentoRepository.sumSaidasByMedicamentoAndPeriodo(inicioPeriodo, fimPeriodo);
-        sb.append("3. CONSUMO DE MEDICAMENTOS (Período: ").append(dataInicio).append(" - ").append(dataFim).append(")\n");
-        if (!consumo.isEmpty()) {
-            for (Object[] resultado : consumo) {
-                sb.append("   - ").append(resultado[0]).append(" | Quantidade Consumida: ").append(resultado[1]).append("\n");
-            }
-        } else {
-            sb.append("   - Nenhum consumo de medicamento registrado no período.\n");
-        }
-        sb.append("\n");
-        
-        
-        // 4. ESTATÍSTICAS DE INTERNAÇÕES
-        // dataEntrada é LocalDateTime -> Usa inicioPeriodo/fimPeriodo
-        long novasInternacoes = internacaoRepository.countByDataEntradaBetween(inicioPeriodo, fimPeriodo);
-        // dataAlta é LocalDate -> Usa dataInicio/dataFim
-        long altasNoPeriodo = internacaoRepository.countByDataAltaBetween(dataInicio, dataFim);
-        
-        sb.append("4. ESTATÍSTICAS DE INTERNAÇÕES (Período: ").append(dataInicio).append(" - ").append(dataFim).append(")\n");
-        sb.append("   - Novas Internações: ").append(novasInternacoes).append("\n");
-        sb.append("   - Altas Registradas: ").append(altasNoPeriodo).append("\n");
-        sb.append("\n");
+// - altasNoPeriodo: dataAlta é LocalDateTime → usar inicioPeriodo/fimPeriodo ou criar variáveis separadas
+long altasNoPeriodo = internacaoRepository.countByDataAltaBetween(inicioPeriodo, fimPeriodo);
+
+sb.append("4. ESTATÍSTICAS DE INTERNAÇÕES (Período: ").append(dataInicio).append(" - ").append(dataFim).append(")\n");
+sb.append("   - Novas Internações: ").append(novasInternacoes).append("\n");
+sb.append("   - Altas Registradas: ").append(altasNoPeriodo).append("\n");
+sb.append("\n");
+
 
 
         sb.append("--------------------------------------------------------------------------------------------------");

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes; // Adicionado para mensagens de feedback
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections; // Adicionado para a lógica de listas
 
 import br.com.hospital.hospital.entity.Internacao;
@@ -171,7 +172,7 @@ public String salvar(@ModelAttribute Internacao internacao, RedirectAttributes r
             }
             
             // 1. REGISTRA A DATA DE ALTA E ATUALIZA O STATUS DA INTERNAÇÃO
-            internacao.setDataAlta(LocalDate.now());
+            internacao.setDataAlta(LocalDateTime.now());
             internacao.setStatus("Concluída"); // 🚨 Atualiza o status
             internacaoService.save(internacao);
 

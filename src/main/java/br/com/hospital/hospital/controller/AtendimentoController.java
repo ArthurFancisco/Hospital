@@ -34,7 +34,7 @@ public String iniciarAtendimento(@PathVariable("id") Integer id, Model model, Re
     Consulta consulta = optionalConsulta.get();
 
     Atendimento atendimento = new Atendimento();
-    atendimento.setIdConsulta(consulta); // ← Aqui está o ajuste
+    atendimento.setConsulta(consulta); // ← Aqui está o ajuste
 
     model.addAttribute("consulta", consulta);
     model.addAttribute("atendimento", atendimento);
@@ -42,31 +42,53 @@ public String iniciarAtendimento(@PathVariable("id") Integer id, Model model, Re
     return "medicoHome/formularioAtendimento";
 }
 
-    @PostMapping("/atendimento/salvar")
-    public String salvarAtendimento(Atendimento atendimento, RedirectAttributes redirectAttributes) {
-
-    if (atendimento.getIdConsulta() == null || atendimento.getIdConsulta().getIdConsulta() == null) {
-        redirectAttributes.addFlashAttribute("mensagemErro", "ID da consulta é obrigatório.");
-        return "redirect:/consultas/listar";
-    }
-
+@PostMapping("/atendimento/salvar/{idConsulta}") // Adicione o ID da Consulta na URL ou como @RequestParam
+public String salvarAtendimento(@PathVariable("idConsulta") Integer idConsulta, 
+                                @ModelAttribute Atendimento atendimento, // Use @ModelAttribute para ligar os campos do form
+                                RedirectAttributes redirectAttributes) {
+    
     try {
-        // Salva o atendimento
+        // 1. Busque a Consulta persistente do banco (Resolvendo o erro 'null or transient value')
+        Optional<Consulta> optionalConsulta = consultaService.buscarConsultaPorId(idConsulta);
+
+        if (optionalConsulta.isEmpty()) {
+             throw new Exception("Consulta associada não encontrada.");
+        }
+        
+        // 2. Vincule a Consulta persistente ao Atendimento
+        atendimento.setConsulta(optionalConsulta.get());
+        
+        // 3. Salva o atendimento
         atendimentoService.salvarAtendimento(atendimento);
 
-        // Atualiza o status da consulta associada
+        // 4. Atualiza o status da consulta associada (Agora o ID é garantido)
         consultaService.atualizarStatusConsulta(
-            atendimento.getIdConsulta().getIdConsulta(),
+            idConsulta, // Use o ID da URL, que é seguro
             "ATENDIDA"
         );
 
-        redirectAttributes.addFlashAttribute("mensagemSucesso",
-                "Atendimento salvo e consulta concluída!");
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Atendimento salvo e consulta concluída!");
     } catch (Exception e) {
+        // ... tratamento de erro
         redirectAttributes.addFlashAttribute("mensagemErro",
-                "Erro ao salvar o atendimento: " + e.getMessage());
+            "Erro ao salvar o atendimento: " + e.getMessage());
     }
 
     return "redirect:/consultas/listar";
+}
+@GetMapping("/atendimento/detalhes/{idAtendimento}")
+public String detalhesAtendimento(@PathVariable("idAtendimento") Integer idAtendimento, Model model, RedirectAttributes redirectAttributes) {
+
+    Optional<Atendimento> optionalAtendimento = atendimentoService.findById(idAtendimento); // Assumindo que este método existe no seu Service
+
+    if (optionalAtendimento.isEmpty()) {
+        redirectAttributes.addFlashAttribute("mensagemErro", "Atendimento não encontrado.");
+        return "redirect:/consultas/listar";
+    }
+
+    Atendimento atendimento = optionalAtendimento.get();
+    model.addAttribute("atendimento", atendimento);
+    
+    return "medicoHome/detalhesAtendimento"; // Nome do arquivo HTML criado
 }
 }

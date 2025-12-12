@@ -9,6 +9,7 @@ import lombok.Data;
 public class PacienteCadastroDTO {
 
     // --- DADOS DO PACIENTE ---
+    private Integer idPaciente;
     private String nomePaciente;
     private String cpfPaciente;
     private LocalDate nascPaciente;

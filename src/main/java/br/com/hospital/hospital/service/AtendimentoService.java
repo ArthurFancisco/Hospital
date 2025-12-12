@@ -23,13 +23,17 @@ public class AtendimentoService {
         return atendimentoRepository.save(atendimento);
     }
 
+    public Optional<Atendimento> findById(Integer idAtendimento) {
+        return atendimentoRepository.findById(idAtendimento);
+    }
+
     public Optional<Atendimento> buscarPorIdConsulta(Integer idConsulta) {
         // Lógica mantida para buscar a Consulta primeiro, se o Repository exigir o objeto Consulta
         Optional<Consulta> consultaOptional = consultaService.buscarConsultaPorId(idConsulta);
 
         if (consultaOptional.isPresent()) {
             // Assumindo que atendimentoRepository.findByIdConsulta espera o objeto Consulta
-            return atendimentoRepository.findByIdConsulta(consultaOptional.get());
+            return atendimentoRepository.findByConsulta(consultaOptional.get());
         }
 
         return Optional.empty();
@@ -38,6 +42,6 @@ public class AtendimentoService {
      
     @Transactional
     public void excluirAtendimentosDaConsulta(Integer idConsulta) {
-        atendimentoRepository.deleteByIdConsulta_IdConsulta(idConsulta);
+        atendimentoRepository.deleteByConsulta_IdConsulta(idConsulta);
     }
 }
